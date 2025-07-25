@@ -247,11 +247,9 @@ def train(args, train_dataset, model, tokenizer, fh, pool):
             
             # modify#4
             if args.use_lora:
-                # 只保存适配器权重
                 model.save_pretrained(last_output_dir)
                 logger.info(f"Saved LoRA adapter weights to {last_output_dir}")
             else:
-                # 原始保存逻辑
                 if args.model_type == "rnn":
                     torch.save(model_to_save.state_dict(), os.path.join(last_output_dir, "model.pt"))
                 else:

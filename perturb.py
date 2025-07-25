@@ -9,7 +9,7 @@ import string
 # ---------- Utility Functions ----------
 
 def generate_random_constant():
-    """生成一个随机常量：要么数字，要么字符串。"""
+    """generates a random constant: number or string."""
     if random.choice([True, False]):
         return str(random.randint(0, 9999))
     else:
@@ -20,14 +20,14 @@ def generate_random_constant():
 
 
 def find_variables(code):
-    """正则匹配 Python 变量名。"""
+    """Regular expressions match Python variable names."""
     pattern = r"^(?!(False|None|True|and|as|assert|async|await|break|class|continue|def|del|elif|else|except|finally|for|from|global|if|import|in|is|lambda|nonlocal|not|or|pass|raise|return|try|while|with|yield)$)(?!^[A-Z])[_a-z][_a-zA-Z0-9]*$"
     tokens = re.findall(r"\b[_a-zA-Z][_a-zA-Z0-9]*\b", code)
     return [tok for tok in set(tokens) if re.match(pattern, tok)]
 
 
 def find_methods(code):
-    """正则匹配 Python 方法名。"""
+    """Regular expressions match Python method names."""
     method_pattern = re.compile(r'''^\s*def\s+
         (?P<name>(?!
             (False|None|True|and|as|assert|async|await|break|class|continue|
@@ -39,7 +39,7 @@ def find_methods(code):
 # ---------- Perturbation Variants ----------
 
 def insert_false_if_fixed(code):
-    """插入定长的无用 if 语句片段。"""
+    """Insert a fixed length useless if statement fragment."""
     lines = code.splitlines()
     idx = random.randint(0, len(lines))
     cond = random.choice(["if \"key\" != \"key\":", "if False:"])
@@ -49,7 +49,7 @@ def insert_false_if_fixed(code):
 
 
 def insert_false_if_random(code):
-    """从原代码随机摘取一行做为 if 体。"""
+    """Randomly extract a line from the original code as the if body."""
     lines = code.splitlines()
     idx = random.randint(0, len(lines))
     cond = random.choice(["if \"key\" != \"key\":", "if False:"])
@@ -61,7 +61,7 @@ def insert_false_if_random(code):
 
 
 def insert_unused_var_existing(code):
-    """插入使用已有变量初始化的未使用变量声明。"""
+    """Insert unused variable declarations initialized with existing variables."""
     vars = find_variables(code)
     val = random.choice(vars) if vars else generate_random_constant()
     new_var = f"unused_{random.randint(1000,9999)}"
@@ -76,7 +76,7 @@ def insert_unused_var_existing(code):
 
 
 def insert_unused_var_random(code):
-    """插入使用随机常量初始化的未使用变量声明。"""
+    """Insert unused variable declarations initialized with random constants."""
     val = generate_random_constant()
     new_var = f"unused_{random.randint(1000,9999)}"
     decl = f"{new_var} = {val}"
@@ -90,7 +90,7 @@ def insert_unused_var_random(code):
 
 
 def rename_var(code):
-    """随机重命名一个变量或方法。"""
+    """Randomly rename a variable."""
     vars = find_variables(code)
     if vars == []:
         return code
@@ -101,7 +101,7 @@ def rename_var(code):
 
 
 def rename_method(code):
-    """随机重命名一个变量或方法。"""
+    """Randomly rename a method."""
     methods = find_methods(code)
     if methods == []:
         return code
@@ -112,23 +112,21 @@ def rename_method(code):
 
 
 def insert_print_enter(code):
-    """在方法体开始处插入 Debug 进入方法的打印。"""
+    """Insert Debug at the beginning of the method body to enter the printing of the method."""
     lines = code.splitlines()
     methods = find_methods(code)
     name = random.choice(methods) if methods else 'foo'
     stmt = f'print("Debug: Entering method {name}()")'
-    # 插入到首行
-    # return stmt + '\n' + code
 
-    # 插入到方法定义处的下一行：
+    # Insert to the next line of method definition:
     idx = next((i for i, l in enumerate(lines) if re.search(rf"\b{name}\b", l)), None)
 
     if idx is None:
-        # 如果根本没找到，就插到文件开头
+        # If can't find it at all, insert it at the beginning of the file
         idx = 0
         indent = ''
     else:
-        # 根据那一行计算缩进
+        # Calculate indentation based on that line
         matches = re.match(r"^\s*", lines[idx])
         if matches == None:
             return code
@@ -136,28 +134,15 @@ def insert_print_enter(code):
             indent = matches.group(0)
         # indent = re.match(r"^\\s*", lines[idx]).group(0)
 
-    # 插在该行之后
+    # Insert after this line
     lines.insert(idx + 1, indent + stmt)
     return "\n".join(lines)
 
 
-
-# def insert_print_variable(code):
-#     """在变量定义处后插入 Debug 打印变量的值。"""
-#     lines = code.splitlines()
-#     vars = find_variables(code)
-#     name = random.choice(vars) if vars else 'x'
-#     stmt = f'print("Debug: Variable {name} = ", {name})'
-#     # 找到变量行
-#     idx = next((i for i,l in enumerate(lines) if re.search(rf"\b{name}\b", l)), len(lines)-1)
-#     indent = re.match(r"^\s*", lines[idx]).group(0)
-#     lines.insert(idx+1, indent + stmt)
-#     return '\n'.join(lines)
-
 def insert_print_variable(code):
-    """在变量定义处后插入 Debug 打印变量的值。"""
+    """Insert Debug to print the value of the variable after the variable definition."""
     lines = code.splitlines()
-    # 如果原代码没有任何行，直接返回
+    # If there are no lines in the original code, return directly
     if not lines:
         return code
 
@@ -165,16 +150,14 @@ def insert_print_variable(code):
     name = random.choice(vars) if vars else 'x'
     stmt = f'print("Debug: Variable {name} = ", {name})'
 
-    # 找到第一个包含变量名的行
-    # 注意把 default 换成 None，这样不会直接得出 len(lines)-1
+    # Find the first row containing the variable name
+    # Please note to replace 'default' with 'None', as this will not directly result in 'len (lines) -1'    idx = next((i for i, l in enumerate(lines) if re.search(rf"\b{name}\b", l)), None)
     idx = next((i for i, l in enumerate(lines) if re.search(rf"\b{name}\b", l)), None)
-
+    
     if idx is None:
-        # 如果根本没找到，就插到文件开头
         idx = 0
         indent = ''
     else:
-        # 根据那一行计算缩进
         matches = re.match(r"^\s*", lines[idx])
         if matches == None:
             return code
@@ -182,13 +165,12 @@ def insert_print_variable(code):
             indent = matches.group(0)
         # indent = re.match(r"^\\s*", lines[idx]).group(0)
 
-    # 插在该行之后
     lines.insert(idx + 1, indent + stmt)
     return "\n".join(lines)
 
 
 def insert_false_loop_for(code):
-    """插入一个永远不执行的 for 循环。"""
+    """Insert a for loop that will never execute."""
     lines = code.splitlines()
     idx = random.randint(0, len(lines))
     x, y = sorted([random.randint(0,9999) for _ in range(2)], reverse=True)
@@ -199,7 +181,7 @@ def insert_false_loop_for(code):
 
 
 def insert_false_loop_while(code):
-    """插入一个永远不执行的 while 循环。"""
+    """Insert a while loop that will never execute."""
     lines = code.splitlines()
     idx = random.randint(0, len(lines))
     cond = random.choice(["while False:", "while \"key\" != \"key\":"])
@@ -209,7 +191,7 @@ def insert_false_loop_while(code):
 
 
 def insert_unused_var_loop(code):
-    """组合：先插入无用循环，再插入未使用变量声明。"""
+    """Combination: Insert useless loops first, then insert unused variable declarations."""
     # return insert_unused_var_existing(insert_false_loop_for(code))
     lines = code.splitlines()
     idx = random.randint(0, len(lines))
@@ -248,7 +230,7 @@ VARIANT_GROUPS = {
 
 
 def apply_perturbation(code, variant=None):
-    """按指定 variant 应用扰动；如无指定，则随机选择。"""
+    """Apply perturbations according to the specified variant; If not specified, randomly select."""
     if variant is None:
         variant = random.choice(list(PERTURBATIONS.keys()))
     if variant not in PERTURBATIONS:
@@ -257,7 +239,7 @@ def apply_perturbation(code, variant=None):
 
 
 def traverse_all_variants(code):
-    """遍历所有具体 variant，返回字典：{variant_name: perturbed_code}."""
+    """Traverse all specific variables and return a dictionary:{variant_name: perturbed_code}."""
     results = {}
     for name, func in PERTURBATIONS.items():
         results[name] = func(code)
@@ -266,26 +248,26 @@ def traverse_all_variants(code):
 
 def process_file(input_file, output_file):
     """
-    处理 JSON 文件，为每个样本生成 num_perturbations 个扰动版本。
+    Process JSON files and generate num_perturbations perturbation versions for each sample.
     """
     with open(input_file, "r", encoding="utf-8") as infile, open(output_file, "w", encoding="utf-8") as outfile:
         for line in infile:
-            line = json.loads(line.strip())  # 解析每一行的 JSON 数据
+            line = json.loads(line.strip())  # Analyze the JSON data for each line
             
             if line:
                 original_input = line['input']
-                gt = line['gt']  # 原始输出 (ground truth)
+                gt = line['gt']  #  (ground truth)
 
-                # 构建新的样本格式
+                # Build a new sample format
                 sample = {
                     "id": str(line["id"]),
                     "input": original_input,
                     "gt": gt
                 }
-                # 写入文件，每行一个 JSON 对象
+                # Write a file with one JSON object per line
                 outfile.write(json.dumps(sample, ensure_ascii=False) + "\n")
 
-                # 生成指定数量的扰动版本
+                # Generate a specified number of perturbation versions
                 perturbed_code = traverse_all_variants(original_input.replace('\\n', '\n').replace('<s> ', '', 1)).values()
                 for perturbed_input in perturbed_code:
                     sample = {
@@ -320,7 +302,7 @@ def main():
 
     args = parser.parse_args()
     process_file(os.path.join(args.input_dir, args.input_file), os.path.join(args.input_dir, args.output_file))
-    print(f"处理完成！结果已保存到 {args.output_file}")
+    print(f"Processing completed! The result has been saved to {args.output_file}")
 
 
 if __name__ == '__main__':

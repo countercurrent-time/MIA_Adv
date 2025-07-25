@@ -1,0 +1,98 @@
+{"id": "1", "input": "<s> for idx, elem in enumerate(numbers):\\n for idx2, elem2 in enumerate(numbers):\\n if idx !=", "gt": "idx2:\\n distance = abs(elem - elem2)\\n if distance < threshold:\\n return True\\n\\n return False\\n </s>"}
+{"id": "2", "input": "<s> result = []\\n current_string = []\\n current_depth = 0\\n\\n for c in paren_string:\\n if c == '(':\\n current_depth", "gt": "+= 1\\n current_string.append(c)\\n elif c == ')':\\n current_depth -= 1\\n current_string.append(c)\\n\\n if current_depth == 0:\\n result.append(''.join(current_string))\\n current_string.clear()\\n\\n return result\\n </s>"}
+{"id": "3", "input": "<s> return number", "gt": "% 1.0\\n </s>"}
+{"id": "4", "input": "<s> balance = 0\\n\\n for op in operations:\\n balance +=", "gt": "op\\n if balance < 0:\\n return True\\n\\n return False\\n </s>"}
+{"id": "5", "input": "<s> mean = sum(numbers) / len(numbers)\\n return sum(abs(x", "gt": "- mean) for x in numbers) / len(numbers)\\n </s>"}
+{"id": "6", "input": "<s> if not numbers:\\n return []\\n\\n result = []\\n\\n", "gt": "for n in numbers[:-1]:\\n result.append(n)\\n result.append(delimeter)\\n\\n result.append(numbers[-1])\\n\\n return result\\n </s>"}
+{"id": "7", "input": "<s> def parse_paren_group(s):\\n depth = 0\\n max_depth = 0\\n for c in s:\\n if c == '(':\\n depth += 1\\n", "gt": "max_depth = max(depth, max_depth)\\n else:\\n depth -= 1\\n\\n return max_depth\\n\\n return [parse_paren_group(x) for x in paren_string.split(' ') if x]\\n </s>"}
+{"id": "8", "input": "<s> return [x for x in", "gt": "strings if substring in x]\\n </s>"}
+{"id": "9", "input": "<s> sum_value = 0\\n prod_value = 1\\n\\n for n in", "gt": "numbers:\\n sum_value += n\\n prod_value *= n\\n return sum_value, prod_value\\n </s>"}
+{"id": "10", "input": "<s> running_max = None\\n result = []\\n\\n for n in numbers:\\n if running_max", "gt": "is None:\\n running_max = n\\n else:\\n running_max = max(running_max, n)\\n\\n result.append(running_max)\\n\\n return result\\n </s>"}
+{"id": "11", "input": "<s> if not string:\\n return ''\\n\\n beginning_of_suffix = 0\\n\\n while", "gt": "not is_palindrome(string[beginning_of_suffix:]):\\n beginning_of_suffix += 1\\n\\n return string + string[:beginning_of_suffix][::-1]\\n </s>"}
+{"id": "12", "input": "<s> def xor(i, j):\\n if i == j:\\n return '0'\\n else:\\n", "gt": "return '1'\\n\\n return ''.join(xor(x, y) for x, y in zip(a, b))\\n </s>"}
+{"id": "13", "input": "<s> if not strings:\\n return None\\n\\n maxlen = max(len(x) for x in", "gt": "strings)\\n for s in strings:\\n if len(s) == maxlen:\\n return s\\n </s>"}
+{"id": "14", "input": "<s> while b:\\n a, b =", "gt": "b, a % b\\n return a\\n </s>"}
+{"id": "15", "input": "<s> result = []\\n\\n for i", "gt": "in range(len(string)):\\n result.append(string[:i+1])\\n return result\\n </s>"}
+{"id": "16", "input": "<s> return ' '.join([str(x) for", "gt": "x in range(n + 1)])\\n </s>"}
+{"id": "17", "input": "<s>    return len(set(string.lower()))\\n </s>", "gt": ""}
+{"id": "18", "input": "<s> note_map = {'o': 4, 'o|': 2, '.|': 1}\\n", "gt": "return [note_map[x] for x in music_string.split(' ') if x]\\n </s>"}
+{"id": "19", "input": "<s> times = 0\\n\\n for i in range(len(string) - len(substring) +", "gt": "1):\\n if string[i:i+len(substring)] == substring:\\n times += 1\\n\\n return times\\n </s>"}
+{"id": "20", "input": "<s> value_map = {\\n 'zero': 0,\\n 'one': 1,\\n 'two': 2,\\n 'three': 3,\\n 'four': 4,\\n 'five': 5,\\n 'six': 6,\\n 'seven':", "gt": "7,\\n 'eight': 8,\\n 'nine': 9\\n }\\n return ' '.join(sorted([x for x in numbers.split(' ') if x], key=lambda x: value_map[x]))\\n </s>"}
+{"id": "21", "input": "<s> closest_pair = None\\n distance = None\\n\\n for idx, elem in enumerate(numbers):\\n for idx2, elem2 in enumerate(numbers):\\n if idx != idx2:\\n if distance is None:\\n distance =", "gt": "abs(elem - elem2)\\n closest_pair = tuple(sorted([elem, elem2]))\\n else:\\n new_distance = abs(elem - elem2)\\n if new_distance < distance:\\n distance = new_distance\\n closest_pair = tuple(sorted([elem, elem2]))\\n\\n return closest_pair\\n </s>"}
+{"id": "22", "input": "<s> min_number = min(numbers)\\n max_number = max(numbers)\\n return [(x -", "gt": "min_number) / (max_number - min_number) for x in numbers]\\n </s>"}
+{"id": "23", "input": "<s> return [x for x", "gt": "in values if isinstance(x, int)]\\n </s>"}
+{"id": "24", "input": "<s>    return len(string)\\n </s>", "gt": ""}
+{"id": "25", "input": "<s> for i in reversed(range(n)):\\n if n", "gt": "% i == 0:\\n return i\\n </s>"}
+{"id": "26", "input": "<s> import math\\n fact = []\\n i = 2\\n while i <= int(math.sqrt(n) + 1):\\n if n %", "gt": "i == 0:\\n fact.append(i)\\n n //= i\\n else:\\n i += 1\\n\\n if n > 1:\\n fact.append(n)\\n return fact\\n </s>"}
+{"id": "27", "input": "<s> import collections\\n c = collections.Counter(numbers)\\n return [n", "gt": "for n in numbers if c[n] <= 1]\\n </s>"}
+{"id": "28", "input": "<s>    return string.swapcase()\\n </s>", "gt": ""}
+{"id": "29", "input": "<s>    return ''.join(strings)\\n </s>", "gt": ""}
+{"id": "30", "input": "<s> return [x for x", "gt": "in strings if x.startswith(prefix)]\\n </s>"}
+{"id": "31", "input": "<s> return [e for e in", "gt": "l if e > 0]\\n </s>"}
+{"id": "32", "input": "<s> if n < 2:\\n return False\\n for k in range(2, n", "gt": "- 1):\\n if n % k == 0:\\n return False\\n return True\\n </s>"}
+{"id": "33", "input": "<s> begin, end = -1., 1.\\n while poly(xs, begin) * poly(xs, end) > 0:\\n begin *= 2.0\\n end *= 2.0\\n while end - begin >", "gt": "1e-10:\\n center = (begin + end) / 2.0\\n if poly(xs, center) * poly(xs, begin) > 0:\\n begin = center\\n else:\\n end = center\\n return begin\\n </s>"}
+{"id": "34", "input": "<s> l = list(l)\\n l[::3]", "gt": "= sorted(l[::3])\\n return l\\n </s>"}
+{"id": "35", "input": "<s>    return sorted(list(set(l)))\\n </s>", "gt": ""}
+{"id": "36", "input": "<s> m = l[0]\\n for e in l:\\n if", "gt": "e > m:\\n m = e\\n return m\\n </s>"}
+{"id": "37", "input": "<s> ns = []\\n for i in range(n):\\n if i % 11 == 0 or i % 13 == 0:\\n", "gt": "ns.append(i)\\n s = ''.join(list(map(str, ns)))\\n ans = 0\\n for c in s:\\n ans += (c == '7')\\n return ans\\n </s>"}
+{"id": "38", "input": "<s> evens = l[::2]\\n odds = l[1::2]\\n evens.sort()\\n ans = []\\n for e,", "gt": "o in zip(evens, odds):\\n ans.extend([e, o])\\n if len(evens) > len(odds):\\n ans.append(evens[-1])\\n return ans\\n </s>"}
+{"id": "39", "input": "<s>    return encode_cyclic(encode_cyclic(s))\\n </s>", "gt": ""}
+{"id": "40", "input": "<s> import math\\n\\n def is_prime(p):\\n if p < 2:\\n return False\\n for k in range(2, min(int(math.sqrt(p)) + 1, p - 1)):\\n if p % k ==", "gt": "0:\\n return False\\n return True\\n f = [0, 1]\\n while True:\\n f.append(f[-1] + f[-2])\\n if is_prime(f[-1]):\\n n -= 1\\n if n == 0:\\n return f[-1]\\n </s>"}
+{"id": "41", "input": "<s> for i in range(len(l)):\\n for j in range(i + 1, len(l)):\\n for k in range(j", "gt": "+ 1, len(l)):\\n if l[i] + l[j] + l[k] == 0:\\n return True\\n return False\\n </s>"}
+{"id": "42", "input": "<s>    return n**2\\n </s>", "gt": ""}
+{"id": "43", "input": "<s> return [(e + 1)", "gt": "for e in l]\\n </s>"}
+{"id": "44", "input": "<s> for i, l1 in enumerate(l):\\n for j in range(i + 1,", "gt": "len(l)):\\n if l1 + l[j] == 0:\\n return True\\n return False\\n </s>"}
+{"id": "45", "input": "<s> ret = \\\"\\\"\\n while x > 0:\\n ret =", "gt": "str(x % base) + ret\\n x //= base\\n return ret\\n </s>"}
+{"id": "46", "input": "<s> return a *", "gt": "h / 2.0\\n </s>"}
+{"id": "47", "input": "<s> results = [0, 0, 2, 0]\\n if n < 4:\\n return results[n]\\n\\n for _", "gt": "in range(4, n + 1):\\n results.append(results[-1] + results[-2] + results[-3] + results[-4])\\n results.pop(0)\\n\\n return results[-1]\\n </s>"}
+{"id": "48", "input": "<s> l = sorted(l)\\n if len(l) % 2 == 1:\\n return l[len(l) // 2]\\n", "gt": "else:\\n return (l[len(l) // 2 - 1] + l[len(l) // 2]) / 2.0\\n </s>"}
+{"id": "49", "input": "<s> for i in range(len(text)):\\n if text[i] != text[len(text)", "gt": "- 1 - i]:\\n return False\\n return True\\n </s>"}
+{"id": "50", "input": "<s> ret = 1\\n for i in range(n):\\n ret", "gt": "= (2 * ret) % p\\n return ret\\n </s>"}
+{"id": "51", "input": "<s> return \\\"\\\".join([chr(((ord(ch) - 5 - ord(\\\"a\\\")) %", "gt": "26) + ord(\\\"a\\\")) for ch in s])\\n </s>"}
+{"id": "52", "input": "<s> return \\\"\\\".join([s for s in text if", "gt": "s.lower() not in [\\\"a\\\", \\\"e\\\", \\\"i\\\", \\\"o\\\", \\\"u\\\"]])\\n </s>"}
+{"id": "53", "input": "<s> for e in l:\\n if e", "gt": ">= t:\\n return False\\n return True\\n </s>"}
+{"id": "54", "input": "<s> return x", "gt": "+ y\\n </s>"}
+{"id": "55", "input": "<s> return set(s0)", "gt": "== set(s1)\\n </s>"}
+{"id": "56", "input": "<s> if n == 0:\\n return 0\\n if n == 1:\\n", "gt": "return 1\\n return fib(n - 1) + fib(n - 2)\\n </s>"}
+{"id": "57", "input": "<s> depth = 0\\n for b in brackets:\\n if b == \\\"<\\\":\\n depth += 1\\n", "gt": "else:\\n depth -= 1\\n if depth < 0:\\n return False\\n return depth == 0\\n </s>"}
+{"id": "58", "input": "<s> if l == sorted(l) or l", "gt": "== sorted(l, reverse=True):\\n return True\\n return False\\n </s>"}
+{"id": "59", "input": "<s> ret = set()\\n for e1 in l1:\\n for e2", "gt": "in l2:\\n if e1 == e2:\\n ret.add(e1)\\n return sorted(list(ret))\\n </s>"}
+{"id": "60", "input": "<s> def is_prime(k):\\n if k < 2:\\n return False\\n for i in range(2, k - 1):\\n if k % i == 0:\\n return False\\n return", "gt": "True\\n largest = 1\\n for j in range(2, n + 1):\\n if n % j == 0 and is_prime(j):\\n largest = max(largest, j)\\n return largest\\n </s>"}
+{"id": "61", "input": "<s> return sum(range(n", "gt": "+ 1))\\n </s>"}
+{"id": "62", "input": "<s> depth = 0\\n for b in brackets:\\n if b == \\\"(\\\":\\n depth += 1\\n", "gt": "else:\\n depth -= 1\\n if depth < 0:\\n return False\\n return depth == 0\\n </s>"}
+{"id": "63", "input": "<s> return [(i * x)", "gt": "for i, x in enumerate(xs)][1:]\\n </s>"}
+{"id": "64", "input": "<s> if n == 0:\\n return 0\\n if n == 1:\\n return 0\\n if n ==", "gt": "2:\\n return 1\\n return fibfib(n - 1) + fibfib(n - 2) + fibfib(n - 3)\\n </s>"}
+{"id": "65", "input": "<s> vowels = \\\"aeiouAEIOU\\\"\\n n_vowels = sum(c in vowels for c in s)\\n", "gt": "if s[-1] == 'y' or s[-1] == 'Y':\\n n_vowels += 1\\n return n_vowels\\n </s>"}
+{"id": "66", "input": "<s> s = str(x)\\n if shift > len(s):\\n return s[::-1]\\n", "gt": "else:\\n return s[len(s) - shift:] + s[:len(s) - shift]\\n </s>"}
+{"id": "67", "input": "<s> if s == \\\"\\\": return 0\\n return sum(ord(char)", "gt": "if char.isupper() else 0 for char in s)\\n </s>"}
+{"id": "68", "input": "<s> lis = list()\\n for i in s.split('", "gt": "'):\\n if i.isdigit():\\n lis.append(int(i))\\n return n - sum(lis)\\n </s>"}
+{"id": "69", "input": "<s> if(len(arr) == 0): return []\\n evens = list(filter(lambda x: x%2", "gt": "== 0, arr))\\n if(evens == []): return []\\n return [min(evens), arr.index(min(evens))]\\n </s>"}
+{"id": "70", "input": "<s> frq = [0] * (max(lst) + 1)\\n for i in lst:\\n frq[i] += 1;\\n\\n ans =", "gt": "-1\\n for i in range(1, len(frq)):\\n if frq[i] >= i:\\n ans = i\\n \\n return ans\\n </s>"}
+{"id": "71", "input": "<s> res, switch = [], True\\n while lst:\\n res.append(min(lst) if", "gt": "switch else max(lst))\\n lst.remove(res[-1])\\n switch = not switch\\n return res\\n </s>"}
+{"id": "72", "input": "<s> if a + b <= c or a + c <= b or b + c <= a:\\n return -1 \\n s = (a + b", "gt": "+ c)/2 \\n area = (s * (s - a) * (s - b) * (s - c)) ** 0.5\\n area = round(area, 2)\\n return area\\n </s>"}
+{"id": "73", "input": "<s> if sum(q) > w:\\n return False\\n\\n i, j = 0, len(q)-1\\n", "gt": "while i<j:\\n if q[i] != q[j]:\\n return False\\n i+=1\\n j-=1\\n return True\\n </s>"}
+{"id": "74", "input": "<s> ans = 0\\n for i in range(len(arr) // 2):\\n if arr[i]", "gt": "!= arr[len(arr) - i - 1]:\\n ans += 1\\n return ans\\n </s>"}
+{"id": "75", "input": "<s> l1 = 0\\n for st in lst1:\\n l1 += len(st)\\n \\n l2 = 0\\n for", "gt": "st in lst2:\\n l2 += len(st)\\n \\n if l1 <= l2:\\n return lst1\\n else:\\n return lst2\\n </s>"}
+{"id": "76", "input": "<s> def is_prime(n):\\n for j in range(2,n):\\n if n%j == 0:\\n return False\\n return True\\n\\n for i in range(2,101):\\n if not is_prime(i): continue\\n for", "gt": "j in range(2,101):\\n if not is_prime(j): continue\\n for k in range(2,101):\\n if not is_prime(k): continue\\n if i*j*k == a: return True\\n return False\\n </s>"}
+{"id": "77", "input": "<s> if (n == 1): \\n return (x == 1) \\n power = 1\\n while", "gt": "(power < x): \\n power = power * n \\n return (power == x) \\n </s>"}
+{"id": "78", "input": "<s> a = abs(a)\\n return int(round(a **", "gt": "(1. / 3))) ** 3 == a\\n </s>"}
+{"id": "79", "input": "<s> primes = ('2', '3', '5', '7', 'B', 'D')\\n total = 0\\n for", "gt": "i in range(0, len(num)):\\n if num[i] in primes:\\n total += 1\\n return total\\n </s>"}
+{"id": "80", "input": "<s> return \\\"db\\\" +", "gt": "bin(decimal)[2:] + \\\"db\\\"\\n </s>"}
+{"id": "81", "input": "<s> if len(s) < 3:\\n return False\\n\\n for i in range(len(s) - 2):\\n \\n if", "gt": "s[i] == s[i+1] or s[i+1] == s[i+2] or s[i] == s[i+2]:\\n return False\\n return True\\n </s>"}
+{"id": "82", "input": "<s> \\n \\n letter_grade = []\\n for gpa in grades:\\n if gpa == 4.0:\\n letter_grade.append(\\\"A+\\\")\\n elif gpa > 3.7:\\n letter_grade.append(\\\"A\\\")\\n elif gpa > 3.3:\\n letter_grade.append(\\\"A-\\\")\\n elif gpa > 3.0:\\n letter_grade.append(\\\"B+\\\")\\n elif gpa > 2.7:\\n letter_grade.append(\\\"B\\\")\\n elif gpa", "gt": "> 2.3:\\n letter_grade.append(\\\"B-\\\")\\n elif gpa > 2.0:\\n letter_grade.append(\\\"C+\\\")\\n elif gpa > 1.7:\\n letter_grade.append(\\\"C\\\")\\n elif gpa > 1.3:\\n letter_grade.append(\\\"C-\\\")\\n elif gpa > 1.0:\\n letter_grade.append(\\\"D+\\\")\\n elif gpa > 0.7:\\n letter_grade.append(\\\"D\\\")\\n elif gpa > 0.0:\\n letter_grade.append(\\\"D-\\\")\\n else:\\n letter_grade.append(\\\"E\\\")\\n return letter_grade\\n </s>"}
+{"id": "83", "input": "<s> l = len(string)\\n if l == 0 or l == 1:\\n return False\\n for", "gt": "i in range(2, l):\\n if l % i == 0:\\n return False\\n return True\\n </s>"}
+{"id": "84", "input": "<s> if n == 1: return 1\\n return", "gt": "18 * (10 ** (n - 2))\\n </s>"}
+{"id": "85", "input": "<s> return bin(sum(int(i) for", "gt": "i in str(N)))[2:]\\n </s>"}
+{"id": "86", "input": "<s> return sum([lst[i] for i in range(1,", "gt": "len(lst), 2) if lst[i]%2 == 0])\\n </s>"}
+{"id": "87", "input": "<s> return ' '.join([''.join(sorted(list(i))) for", "gt": "i in s.split(' ')])\\n </s>"}
+{"id": "88", "input": "<s> coords = [(i, j) for i in range(len(lst)) for j in range(len(lst[i]))", "gt": "if lst[i][j] == x]\\n return sorted(sorted(coords, key=lambda x: x[1], reverse=True), key=lambda x: x[0])\\n </s>"}
+{"id": "89", "input": "<s> return [] if len(array) == 0 else", "gt": "sorted(array, reverse= (array[0]+array[-1]) % 2 == 0) \\n </s>"}
+{"id": "90", "input": "<s> d = 'abcdefghijklmnopqrstuvwxyz'\\n out = ''\\n for c in s:\\n if c", "gt": "in d:\\n out += d[(d.index(c)+2*2) % 26]\\n else:\\n out += c\\n return out\\n </s>"}
+{"id": "91", "input": "<s> lst = sorted(set(lst))\\n return None", "gt": "if len(lst) < 2 else lst[1]\\n </s>"}
+{"id": "92", "input": "<s> import re\\n sentences = re.split(r'[.?!]\\\\s*', S)\\n return", "gt": "sum(sentence[0:2] == 'I ' for sentence in sentences)\\n </s>"}
+{"id": "93", "input": "<s> \\n if isinstance(x,int) and isinstance(y,int) and isinstance(z,int):\\n if (x+y==z)", "gt": "or (x+z==y) or (y+z==x):\\n return True\\n return False\\n return False\\n </s>"}
+{"id": "94", "input": "<s> vowels = \\\"aeiouAEIOU\\\"\\n vowels_replace = dict([(i, chr(ord(i) + 2)) for i in vowels])\\n message", "gt": "= message.swapcase()\\n return ''.join([vowels_replace[i] if i in vowels else i for i in message])\\n </s>"}
+{"id": "95", "input": "<s> def isPrime(n):\\n for i in range(2,int(n**0.5)+1):\\n if n%i==0:\\n return False\\n\\n return True\\n maxx = 0\\n i = 0\\n while i", "gt": "< len(lst):\\n if(lst[i] > maxx and isPrime(lst[i])):\\n maxx = lst[i]\\n i+=1\\n result = sum(int(digit) for digit in str(maxx))\\n return result\\n\\n </s>"}
+{"id": "96", "input": "<s> if len(dict.keys()) == 0:\\n return False\\n else:\\n state = \\\"start\\\"\\n for key in dict.keys():\\n\\n if isinstance(key, str) == False:\\n state = \\\"mixed\\\"\\n break\\n if state == \\\"start\\\":\\n if key.isupper():\\n state = \\\"upper\\\"\\n elif key.islower():\\n", "gt": "state = \\\"lower\\\"\\n else:\\n break\\n elif (state == \\\"upper\\\" and not key.isupper()) or (state == \\\"lower\\\" and not key.islower()):\\n state = \\\"mixed\\\"\\n break\\n else:\\n break\\n return state == \\\"upper\\\" or state == \\\"lower\\\" \\n </s>"}
+{"id": "97", "input": "<s> primes = []\\n for i in range(2, n):\\n is_prime = True\\n for j in range(2,", "gt": "i):\\n if i % j == 0:\\n is_prime = False\\n break\\n if is_prime:\\n primes.append(i)\\n return primes\\n\\n </s>"}
+{"id": "98", "input": "<s> return abs(a % 10)", "gt": "* abs(b % 10)\\n </s>"}

@@ -44,8 +44,8 @@ Place them in the same directory, e.g., `/data/MIAdataset/`.
 On the first run, the script will detect that the `.npz` specified by `--feature_path` does not exist and will automatically extract and save features:
 
 ```bash
-python new_classifier_submit.py \
-  --input_dir "/data/MIAdataset" \
+python classifier.py \
+  --input_dir "./dataset/" \
   --true_file "train_codes.txt" \
   --false_file "test_codes.txt" \
   --true_gt_file "train_labels.json" \

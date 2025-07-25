@@ -23,7 +23,7 @@ if not os.path.exists("feature.npz"):
     tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME, cache_dir='/root/.cache/huggingface/hub/')
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    model = model.to(device)  # 将模型移动到 GPU
+    model = model.to(device)  # move model to GPU
 
     codegpt_tokenizer = GPT2Tokenizer.from_pretrained("microsoft/CodeGPT-small-py", cache_dir='/root/.cache/huggingface/hub/')
     codegpt_model = GPT2LMHeadModel.from_pretrained("microsoft/CodeGPT-small-py", cache_dir='/root/.cache/huggingface/hub/').to(device)
@@ -34,8 +34,8 @@ if not os.path.exists("feature.npz"):
 class CustomMLP(nn.Module):
     def __init__(self, input_dim, hidden_dims, num_classes, dropout=0.5):
         """
-        hidden_dims: 一个列表，指定每个隐藏层的宽度
-          e.g. [128, 64, 32] 表示三层隐藏层，宽度依次是 128、64、32
+        hidden_dims: a list of the width of every hidden layers
+        e.g. [128, 64, 32] represent three hidden layers, with widths of 128, 64 and 32
         """
         super().__init__()
         layers = []
@@ -45,7 +45,7 @@ class CustomMLP(nn.Module):
             layers.append(nn.ReLU())
             layers.append(nn.Dropout(dropout))
             prev_dim = h
-        # 最后一层映射到输出
+        # Last layer mapped to output
         layers.append(nn.Linear(prev_dim, num_classes))
         self.model = nn.Sequential(*layers)
 
@@ -63,7 +63,7 @@ def train_mlp(model: nn.Module,
               lr: float = 1e-3,
               num_epochs: int = 50):
     """
-    基本训练函数，含可选验证集输出。
+    basic training function, with optional evaluating dataset output.
     """
     device = device or torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model.to(device)
@@ -72,7 +72,7 @@ def train_mlp(model: nn.Module,
     loader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
 
     optimizer = torch.optim.Adam(model.parameters(), lr=lr)
-    # === 实例化 LR scheduler ===
+    # === instantiate LR scheduler ===
     scheduler = StepLR(optimizer, step_size=10, gamma=0.1)
     criterion = nn.CrossEntropyLoss()
 
@@ -94,7 +94,7 @@ def train_mlp(model: nn.Module,
             val_loss, val_acc = evaluate_mlp(model, X_val, y_val, device)
             msg += f"  val_loss={val_loss:.4f}  val_acc={val_acc:.4%}"
         # print(msg)
-        # === 在每个 epoch 结束后更新学习率 ===
+        # === update learning rate fater every epoch===
         scheduler.step()
 
 
@@ -103,7 +103,7 @@ def evaluate_mlp(model: nn.Module,
                  y: torch.Tensor,
                  device: torch.device = None):
     """
-    计算平均交叉熵损失与准确率
+    calculate average cross entropy loss and accuracy
     """
     device = device or next(model.parameters()).device
     model.eval()
@@ -122,7 +122,7 @@ def report_binary_metrics(model: nn.Module,
                           y: torch.Tensor,
                           device: torch.device = None):
     """
-    （仅二分类）打印混淆矩阵、TPR、FPR、AUC。
+    (only binary classify)print confusion matrix, TPR, FPR, AUC.
     """
     device = device or next(model.parameters()).device
     model.eval()
@@ -131,7 +131,7 @@ def report_binary_metrics(model: nn.Module,
         probs = F.softmax(model(X), dim=1)[:, 1].cpu().numpy()
         y_true = y.cpu().numpy()
 
-    # 混淆矩阵 T N | F P
+    # confusion matrix T N | F P
     y_pred = (probs >= 0.5).astype(int)
     tn, fp, fn, tp = confusion_matrix(y_true, y_pred).ravel()
     tpr = tp / (tp + fn)
@@ -140,24 +140,24 @@ def report_binary_metrics(model: nn.Module,
 
     with torch.no_grad():
         X, y = X.to(device), y.to(device)
-        # 1) 检查输入
+        # 1) check input
         if torch.isnan(X).any():
-            # 假设 X 是一个 shape=(N, D) 的 Tensor
-            nan_mask = torch.isnan(X)                  # 同维度的布尔矩阵，NaN 处为 True
-            nan_indices = torch.nonzero(nan_mask)      # 返回所有 NaN 元素的 (row, col) 坐标
+            # assume X is a Tensor with shape=(N, D)
+            nan_mask = torch.isnan(X)                  # boolean matrices of the same dimension, with True at NaN
+            nan_indices = torch.nonzero(nan_mask)      # return the (row, col) coordinates of all NaN elements
 
-            print(f"一共发现 {nan_indices.size(0)} 个 NaN：")
+            print(f"find {nan_indices.size(0)} NaN(s):")
             for row, col in nan_indices:
-                print(f"  • 第 {row.item()} 行，第 {col.item()} 列 ({X[row, col].item()})")
-            raise ValueError("输入 X 中包含 NaN！")
+                print(f"  •  {row.item()} row，{col.item()} column: ({X[row, col].item()}) item")
+            raise ValueError("input X contains NaN!")
         logits = model(X)
-        # 2) 检查模型输出
+        # 2) check model output
         if torch.isnan(logits).any():
-            raise ValueError("模型输出 logits 中包含 NaN！")
+            raise ValueError("model output logits contains NaN!")
         probs = F.softmax(logits, dim=1)[:, 1]
-        # 3) 检查 softmax 后的概率
+        # 3) check probabilities after softmax
         if torch.isnan(probs).any():
-            raise ValueError("softmax 之后的 probs 中包含 NaN！")
+            raise ValueError("probabilities after softmax contains NaN!")
         probs = probs.cpu().numpy()
         y_true = y.cpu().numpy()
 
@@ -180,8 +180,8 @@ def report_binary_metrics(model: nn.Module,
 def extract_embeddings(text):
     inputs = tokenizer(text, return_tensors="pt", truncation=True, padding=True, max_length=512).to(device)
     with torch.no_grad():
-        outputs = model(**inputs).last_hidden_state.mean(dim=1)  # 使用 GPU 计算
-    return outputs.squeeze(0).cpu().numpy()  # 转回 CPU 再转换为 NumPy
+        outputs = model(**inputs).last_hidden_state.mean(dim=1)  # calculate with GPU
+    return outputs.squeeze(0).cpu().numpy()  # convert to CPU then convert to NumPy
 
 
 def compute_similarity(x, y):
@@ -205,30 +205,30 @@ def calculate_perplexity(text, model, tokenizer):
     input_ids = torch.tensor(inputs).unsqueeze(0)
     input_ids = input_ids.to(device)
     with torch.no_grad():
-        # 2) 检查 input_ids
+        # 2) check input_ids
         if input_ids.numel() == 0:
-            raise ValueError("输入被截断为空序列！请检查 max_length 或者文本本身。")
+            raise ValueError("The input has been truncated to an empty sequence! Please check the max_length or the text itself.")
         if torch.isnan(input_ids).any():
-            raise ValueError("input_ids 中包含 NaN！")
+            raise ValueError("input_ids contains Nan!")
 
-        # 3) 前向计算
+        # 3) forward calculation
         outputs = model(input_ids, labels=input_ids)
-        loss = outputs.loss  # HF 新版用 .loss， logits 在 outputs.logits
+        loss = outputs.loss  # HF new version uses output.loss and outputs.logits
         logits = outputs.logits
 
-        # 4) 检查 loss / logits
+        # 4) checkout loss / logits
         if torch.isnan(loss) or torch.isinf(loss):
             return 1e6
-            print(f"‼️ loss 异常：{loss.item()}")
-            # 也打印一下 logits 分布
+            print(f"‼️ loss exception：{loss.item()}")
+            # print logits distribution
             print(f"logits min/max: {logits.min().item()}/{logits.max().item()}")
-            raise ValueError("计算 loss 时出现 NaN/Inf！")
+            raise ValueError("NaN/Inf appear when calculate loss!")
 
-        # 5) 计算 perplexity
+        # 5) calculate perplexity
         ppl = torch.exp(loss)
         if torch.isinf(ppl) or torch.isnan(ppl):
-            print(f"‼️ perplexity 也异常：exp({loss.item()}) = {ppl.item()}")
-            raise ValueError("exp(loss) 得到 NaN/Inf！")
+            print(f"‼️ perplexity exception：exp({loss.item()}) = {ppl.item()}")
+            raise ValueError("exp(loss) gets NaN/Inf！")
 
         return ppl.cpu().item()
 
@@ -245,15 +245,15 @@ def compute_features(y, y_pred, y_preds_perturbed):
     v_y_pred = extract_embeddings(y_pred)
     v_y_preds_perturbed = [extract_embeddings(y_p) for y_p in y_preds_perturbed]
 
-    similarities = [sim(v_y, v_y_p) for v_y_p in v_y_preds_perturbed] # 忽略100%的相似度
+    similarities = [sim(v_y, v_y_p) for v_y_p in v_y_preds_perturbed]
 
     base_sim = compute_similarity(y, y_pred)
     perturbed_sims = [compute_similarity(y, y_p) for y_p in y_preds_perturbed]
     # perturbed_sims = [compute_similarity(y_pred, y_p) for y_p in y_preds_perturbed]
     all_sims = [base_sim] + perturbed_sims
     sim_stats = [
-        np.mean(all_sims),    # 平均值
-        np.std(all_sims)     # 标准差
+        np.mean(all_sims),    # average
+        np.std(all_sims)     # standard deviation
     ]
     base_ppl = calculate_perplexity(y_pred, codegpt_model, codegpt_tokenizer)
     perturbed_ppls = [calculate_perplexity(py, codegpt_model, codegpt_tokenizer) for py in y_preds_perturbed]
@@ -263,8 +263,8 @@ def compute_features(y, y_pred, y_preds_perturbed):
     all_ppls = [(ppl - base_ppl) / base_ppl for ppl in all_ppls]
 
     ppl_stats = [
-        np.mean(all_ppls),    # 平均值
-        np.std(all_ppls)     # 标准差
+        np.mean(all_ppls),    # average
+        np.std(all_ppls)     # standard deviation
     ]
 
     feature_vector = (
@@ -278,26 +278,25 @@ def compute_features(y, y_pred, y_preds_perturbed):
     return feature_vector
 
 
-# 分层精确划分函数
 def stratified_split(X, y, test_size=0.5, n_samples_per_class=None, random_state=19260817):
     """
-    改进版分层划分函数
-    
-    参数：
-    X : 特征矩阵
-    y : 标签向量
-    test_size : 测试集比例 (默认0.5)
-    n_samples_per_class : 每个类别的总样本数 (默认使用最小类别数)
-    random_state : 随机种子
-    
-    返回：
+    Improved Layered Partition Function
+        
+    Parameters:
+    X: Feature Matrix
+    Y: Label vector
+    Test_2: Test set ratio (default 0.5)
+    N_samples_per_class: The total number of samples for each category (default is to use the minimum number of categories)
+    Random_date: Random Seed
+        
+    return:
     X_train, X_test, y_train, y_test
     """
     
-    # 设置随机种子
+    # set random seed
     np.random.seed(random_state)
     
-    # 分离两类样本索引
+    # separate two types of sample idx
     class1_idx = np.where(y == 1)[0]
     class0_idx = np.where(y == 0)[0]
 
@@ -306,7 +305,7 @@ def stratified_split(X, y, test_size=0.5, n_samples_per_class=None, random_state
     # for _ in range(0, 3):
     #     print(X[class1_idx[_]])
     
-    # 确定每个类别的最终样本数，n_samples 的默认值应该为 len(class1_idx) 的 40%
+    # Determine the final number of samples for each category, and the default value for n_samples should be 40% of len (class1_idx)
     if n_samples_per_class is None:
         # n_samples = min(len(class1_idx), len(class0_idx))
         # n_samples = math.ceil(len(class0_idx) * 0.2 * 2)
@@ -316,18 +315,18 @@ def stratified_split(X, y, test_size=0.5, n_samples_per_class=None, random_state
     
     # print(len(class0_idx), n_samples)
 
-    # 随机选择指定数量的样本 (无放回)
+    # Randomly select a specified number of samples (without replacement)
     selected_class1 = np.random.choice(class1_idx, n_samples, replace=False)
     selected_class0 = np.random.choice(class0_idx, n_samples, replace=False)
     
-    # 计算每类的训练样本数
+    # Calculate the number of training samples for each class
     train_per_class = int(n_samples * (1 - test_size))
     
-    # 生成随机排列
+    # Generate random permutation
     perm_class1 = np.random.permutation(n_samples)
     perm_class0 = np.random.permutation(n_samples)
     
-    # 划分索引
+    # Partition index
     train_idx = np.concatenate([
         selected_class1[perm_class1[:train_per_class]],
         selected_class0[perm_class0[:train_per_class]]
@@ -338,21 +337,18 @@ def stratified_split(X, y, test_size=0.5, n_samples_per_class=None, random_state
         selected_class0[perm_class0[train_per_class:]]
     ])
     
-    # 打乱顺序
+    # shuffle
     np.random.shuffle(train_idx)
     np.random.shuffle(test_idx)
     
-    # 严格验证样本平衡
+    # Strictly verify sample balance
     def check_balance(indices, stage):
         counts = np.bincount(y[indices])
         if len(counts) < 2 or counts[0] != counts[1]:
-            raise ValueError(f"{stage}集类别不平衡: 0类{counts[0]}个, 1类{counts[1]}个")
+            raise ValueError(f"{stage} imbalace: label 0 counts {counts[0]}, label 1 counts {counts[1]}")
     
-    check_balance(train_idx, "训练")
-    check_balance(test_idx, "测试")
-
-    # if len(train_idx) != len(test_idx):
-    #     raise ValueError(f"训练集与测试集大小不正确")
+    check_balance(train_idx, "train")
+    check_balance(test_idx, "test")
     
     # print(len(X[train_idx]), len(X[test_idx]), len(y[train_idx]), len(y[test_idx]))
     return X[train_idx], X[test_idx], y[train_idx], y[test_idx]
@@ -370,7 +366,7 @@ def load_json(file_path):
 
 
 # -------------------------
-# 1) 原始特征计算与保存
+# 1) Original feature calculation and preservation
 # -------------------------
 
 
@@ -388,18 +384,18 @@ def pair_data(true_data, true_gt_data):
 
 
 def set_seed(seed=42):
-    random.seed(seed)                      # Python 内建的随机
-    np.random.seed(seed)                   # NumPy 随机
-    torch.manual_seed(seed)                # CPU 上的 PyTorch 随机
+    random.seed(seed)                      # Python inline random
+    np.random.seed(seed)                   # NumPy random
+    torch.manual_seed(seed)                # PyTorch random on CPU
     if torch.cuda.is_available():
-        torch.cuda.manual_seed_all(seed)   # GPU 上的 PyTorch 随机
+        torch.cuda.manual_seed_all(seed)   # PyTorch random on GPU
         torch.backends.cudnn.deterministic = True
         torch.backends.cudnn.benchmark = False
 
 
 def save_features_and_labels(true_file, false_file, true_gt_file, false_gt_file,
                              feature_path="features.npz"):
-    # （把你原来的 load_txt/load_json/pair_data/compute_features 等都放这里）
+    # （load_txt/load_json/pair_data/compute_features）
     true_data = load_txt(true_file)
     false_data = load_txt(false_file)
     true_gt_data = load_json(true_gt_file)[::12]
@@ -420,18 +416,18 @@ def save_features_and_labels(true_file, false_file, true_gt_file, false_gt_file,
     data = np.array(data, dtype=np.float32)
     labels = np.array(labels, dtype=np.int64)
 
-    # 保存到单个 .npz 文件
+    # save to single .npz file
     np.savez(feature_path, X=data, y=labels)
     # print(f"Saved features to {feature_path}: X.shape={data.shape}, y.shape={labels.shape}")
 
 
 # -------------------------
-# 2) 加载特征并进行训练/报告
+# 2) Load features and train/report
 # -------------------------
 
 
 def run_training_on_saved_features(feature_path="features.npz", feature_path_test=None, exclude=None, random_state=None, random_state_2=None, n_samples_per_class=None, args=None):
-    # 加载
+    # load
     arr = np.load(feature_path)
     X = arr["X"]
 
@@ -482,17 +478,17 @@ def run_training_on_saved_features(feature_path="features.npz", feature_path_tes
         X_test = arr_test["X"]
 
         if exclude:
-            # 同样排除测试集中的对应列
+            # Also exclude corresponding columns from the test set
             X_test = X_test[:, indices]
 
         y_test = arr_test["y"]
         _, X_test, __, y_test = stratified_split(X_test, y_test, test_size=0.5, n_samples_per_class=len(X_test), random_state=random_state_2)
 
-    # ==== 特征标准化 ====
+    # ==== Standardization of features ====
     scaler = StandardScaler().fit(X_train)
     X_train = scaler.transform(X_train)
     X_test  = scaler.transform(X_test)
-    # （如果后续要重用 scaler，可用 joblib.dump(scaler, 'scaler.pkl') 保存）
+    # (If you want to reuse the scaler in the future, you can save it using joblib.dump (scaler,'scaler. pkl ')
 
 
     X_train_t = torch.from_numpy(X_train)
@@ -500,7 +496,7 @@ def run_training_on_saved_features(feature_path="features.npz", feature_path_tes
     X_test_t  = torch.from_numpy(X_test)
     y_test_t  = torch.from_numpy(y_test)
 
-    # 超参数
+    # hyper-parameters
     input_dim   = X_train.shape[1]
     hidden_dim  = 1024
     num_classes = len(np.unique(y))
@@ -522,7 +518,7 @@ def run_training_on_saved_features(feature_path="features.npz", feature_path_tes
         dropout=dropout
     )
 
-    # 训练（含验证损失打印；这里直接用测试集做简单“验证”）
+    # Training (including validation loss printing; here we directly use the test set for simple "validation")
     train_mlp(
         model,
         X_train_t, y_train_t,
@@ -532,11 +528,11 @@ def run_training_on_saved_features(feature_path="features.npz", feature_path_tes
         num_epochs=num_epochs
     )
 
-    # 最终在测试集上报告
+    # Finally report on the test set
     test_loss, test_acc = evaluate_mlp(model, X_test_t, y_test_t)
     print(f"\nFinal Test Loss: {test_loss:.4f}, Test Accuracy: {test_acc:.4%}")
 
-    # 如果是二分类，打印 TPR/FPR/AUC
+    # if is binary classfy, prints TPR/FPR/AUC
     if num_classes == 2:
         return report_binary_metrics(model, X_test_t, y_test_t)
 

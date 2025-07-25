@@ -1,0 +1,98 @@
+<s>    for idx, elem in enumerate(numbers):\n        for idx2, elem2 in enumerate(numbers):\n            if idx != idx2:\n                distance = abs(elem - elem2)\n                if distance < threshold:\n                    return True\n\n    return False\n </s>
+<s>    result = []\n    current_string = []\n    current_depth = 0\n\n    for c in paren_string:\n        if c == '(':\n            current_depth += 1\n            current_string.append(c)\n        elif c == ')':\n            current_depth -= 1\n            current_string.append(c)\n\n            if current_depth == 0:\n                result.append(''.join(current_string))\n                current_string.clear()\n\n    return result\n </s>
+<s>    return number % 1.0\n </s>
+<s>    balance = 0\n\n    for op in operations:\n        balance += op\n        if balance < 0:\n            return True\n\n    return False\n </s>
+<s>    mean = sum(numbers) / len(numbers)\n    return sum(abs(x - mean) for x in numbers) / len(numbers)\n </s>
+<s>    if not numbers:\n        return []\n\n    result = []\n\n    for n in numbers[:-1]:\n        result.append(n)\n        result.append(delimeter)\n\n    result.append(numbers[-1])\n\n    return result\n </s>
+<s>    def parse_paren_group(s):\n        depth = 0\n        max_depth = 0\n        for c in s:\n            if c == '(':\n                depth += 1\n                max_depth = max(depth, max_depth)\n            else:\n                depth -= 1\n\n        return max_depth\n\n    return [parse_paren_group(x) for x in paren_string.split(' ') if x]\n </s>
+<s>    return [x for x in strings if substring in x]\n </s>
+<s>    sum_value = 0\n    prod_value = 1\n\n    for n in numbers:\n        sum_value += n\n        prod_value *= n\n    return sum_value, prod_value\n </s>
+<s>    running_max = None\n    result = []\n\n    for n in numbers:\n        if running_max is None:\n            running_max = n\n        else:\n            running_max = max(running_max, n)\n\n        result.append(running_max)\n\n    return result\n </s>
+<s>    if not string:\n        return ''\n\n    beginning_of_suffix = 0\n\n    while not is_palindrome(string[beginning_of_suffix:]):\n        beginning_of_suffix += 1\n\n    return string + string[:beginning_of_suffix][::-1]\n </s>
+<s>    def xor(i, j):\n        if i == j:\n            return '0'\n        else:\n            return '1'\n\n    return ''.join(xor(x, y) for x, y in zip(a, b))\n </s>
+<s>    if not strings:\n        return None\n\n    maxlen = max(len(x) for x in strings)\n    for s in strings:\n        if len(s) == maxlen:\n            return s\n </s>
+<s>    while b:\n        a, b = b, a % b\n    return a\n </s>
+<s>    result = []\n\n    for i in range(len(string)):\n        result.append(string[:i+1])\n    return result\n </s>
+<s>    return ' '.join([str(x) for x in range(n + 1)])\n </s>
+<s>    return len(set(string.lower()))\n </s>
+<s>    note_map = {'o': 4, 'o|': 2, '.|': 1}\n    return [note_map[x] for x in music_string.split(' ') if x]\n </s>
+<s>    times = 0\n\n    for i in range(len(string) - len(substring) + 1):\n        if string[i:i+len(substring)] == substring:\n            times += 1\n\n    return times\n </s>
+<s>    value_map = {\n        'zero': 0,\n        'one': 1,\n        'two': 2,\n        'three': 3,\n        'four': 4,\n        'five': 5,\n        'six': 6,\n        'seven': 7,\n        'eight': 8,\n        'nine': 9\n    }\n    return ' '.join(sorted([x for x in numbers.split(' ') if x], key=lambda x: value_map[x]))\n </s>
+<s>    closest_pair = None\n    distance = None\n\n    for idx, elem in enumerate(numbers):\n        for idx2, elem2 in enumerate(numbers):\n            if idx != idx2:\n                if distance is None:\n                    distance = abs(elem - elem2)\n                    closest_pair = tuple(sorted([elem, elem2]))\n                else:\n                    new_distance = abs(elem - elem2)\n                    if new_distance < distance:\n                        distance = new_distance\n                        closest_pair = tuple(sorted([elem, elem2]))\n\n    return closest_pair\n </s>
+<s>    min_number = min(numbers)\n    max_number = max(numbers)\n    return [(x - min_number) / (max_number - min_number) for x in numbers]\n </s>
+<s>    return [x for x in values if isinstance(x, int)]\n </s>
+<s>    return len(string)\n </s>
+<s>    for i in reversed(range(n)):\n        if n % i == 0:\n            return i\n </s>
+<s>    import math\n    fact = []\n    i = 2\n    while i <= int(math.sqrt(n) + 1):\n        if n % i == 0:\n            fact.append(i)\n            n //= i\n        else:\n            i += 1\n\n    if n > 1:\n        fact.append(n)\n    return fact\n </s>
+<s>    import collections\n    c = collections.Counter(numbers)\n    return [n for n in numbers if c[n] <= 1]\n </s>
+<s>    return string.swapcase()\n </s>
+<s>    return ''.join(strings)\n </s>
+<s>    return [x for x in strings if x.startswith(prefix)]\n </s>
+<s>    return [e for e in l if e > 0]\n </s>
+<s>    if n < 2:\n        return False\n    for k in range(2, n - 1):\n        if n % k == 0:\n            return False\n    return True\n </s>
+<s>    begin, end = -1., 1.\n    while poly(xs, begin) * poly(xs, end) > 0:\n        begin *= 2.0\n        end *= 2.0\n    while end - begin > 1e-10:\n        center = (begin + end) / 2.0\n        if poly(xs, center) * poly(xs, begin) > 0:\n            begin = center\n        else:\n            end = center\n    return begin\n </s>
+<s>    l = list(l)\n    l[::3] = sorted(l[::3])\n    return l\n </s>
+<s>    return sorted(list(set(l)))\n </s>
+<s>    m = l[0]\n    for e in l:\n        if e > m:\n            m = e\n    return m\n </s>
+<s>    ns = []\n    for i in range(n):\n        if i % 11 == 0 or i % 13 == 0:\n            ns.append(i)\n    s = ''.join(list(map(str, ns)))\n    ans = 0\n    for c in s:\n        ans += (c == '7')\n    return ans\n </s>
+<s>    evens = l[::2]\n    odds = l[1::2]\n    evens.sort()\n    ans = []\n    for e, o in zip(evens, odds):\n        ans.extend([e, o])\n    if len(evens) > len(odds):\n        ans.append(evens[-1])\n    return ans\n </s>
+<s>    return encode_cyclic(encode_cyclic(s))\n </s>
+<s>    import math\n\n    def is_prime(p):\n        if p < 2:\n            return False\n        for k in range(2, min(int(math.sqrt(p)) + 1, p - 1)):\n            if p % k == 0:\n                return False\n        return True\n    f = [0, 1]\n    while True:\n        f.append(f[-1] + f[-2])\n        if is_prime(f[-1]):\n            n -= 1\n        if n == 0:\n            return f[-1]\n </s>
+<s>    for i in range(len(l)):\n        for j in range(i + 1, len(l)):\n            for k in range(j + 1, len(l)):\n                if l[i] + l[j] + l[k] == 0:\n                    return True\n    return False\n </s>
+<s>    return n**2\n </s>
+<s>    return [(e + 1) for e in l]\n </s>
+<s>    for i, l1 in enumerate(l):\n        for j in range(i + 1, len(l)):\n            if l1 + l[j] == 0:\n                return True\n    return False\n </s>
+<s>    ret = \"\"\n    while x > 0:\n        ret = str(x % base) + ret\n        x //= base\n    return ret\n </s>
+<s>    return a * h / 2.0\n </s>
+<s>    results = [0, 0, 2, 0]\n    if n < 4:\n        return results[n]\n\n    for _ in range(4, n + 1):\n        results.append(results[-1] + results[-2] + results[-3] + results[-4])\n        results.pop(0)\n\n    return results[-1]\n </s>
+<s>    l = sorted(l)\n    if len(l) % 2 == 1:\n        return l[len(l) // 2]\n    else:\n        return (l[len(l) // 2 - 1] + l[len(l) // 2]) / 2.0\n </s>
+<s>    for i in range(len(text)):\n        if text[i] != text[len(text) - 1 - i]:\n            return False\n    return True\n </s>
+<s>    ret = 1\n    for i in range(n):\n        ret = (2 * ret) % p\n    return ret\n </s>
+<s>    return \"\".join([chr(((ord(ch) - 5 - ord(\"a\")) % 26) + ord(\"a\")) for ch in s])\n </s>
+<s>    return \"\".join([s for s in text if s.lower() not in [\"a\", \"e\", \"i\", \"o\", \"u\"]])\n </s>
+<s>    for e in l:\n        if e >= t:\n            return False\n    return True\n </s>
+<s>    return x + y\n </s>
+<s>    return set(s0) == set(s1)\n </s>
+<s>    if n == 0:\n        return 0\n    if n == 1:\n        return 1\n    return fib(n - 1) + fib(n - 2)\n </s>
+<s>    depth = 0\n    for b in brackets:\n        if b == \"<\":\n            depth += 1\n        else:\n            depth -= 1\n        if depth < 0:\n            return False\n    return depth == 0\n </s>
+<s>    if l == sorted(l) or l == sorted(l, reverse=True):\n        return True\n    return False\n </s>
+<s>    ret = set()\n    for e1 in l1:\n        for e2 in l2:\n            if e1 == e2:\n                ret.add(e1)\n    return sorted(list(ret))\n </s>
+<s>    def is_prime(k):\n        if k < 2:\n            return False\n        for i in range(2, k - 1):\n            if k % i == 0:\n                return False\n        return True\n    largest = 1\n    for j in range(2, n + 1):\n        if n % j == 0 and is_prime(j):\n            largest = max(largest, j)\n    return largest\n </s>
+<s>    return sum(range(n + 1))\n </s>
+<s>    depth = 0\n    for b in brackets:\n        if b == \"(\":\n            depth += 1\n        else:\n            depth -= 1\n        if depth < 0:\n            return False\n    return depth == 0\n </s>
+<s>    return [(i * x) for i, x in enumerate(xs)][1:]\n </s>
+<s>    if n == 0:\n        return 0\n    if n == 1:\n        return 0\n    if n == 2:\n        return 1\n    return fibfib(n - 1) + fibfib(n - 2) + fibfib(n - 3)\n </s>
+<s>    vowels = \"aeiouAEIOU\"\n    n_vowels = sum(c in vowels for c in s)\n    if s[-1] == 'y' or s[-1] == 'Y':\n        n_vowels += 1\n    return n_vowels\n </s>
+<s>    s = str(x)\n    if shift > len(s):\n        return s[::-1]\n    else:\n        return s[len(s) - shift:] + s[:len(s) - shift]\n </s>
+<s>    if s == \"\": return 0\n    return sum(ord(char) if char.isupper() else 0 for char in s)\n </s>
+<s>    lis = list()\n    for i in s.split(' '):\n        if i.isdigit():\n            lis.append(int(i))\n    return n - sum(lis)\n </s>
+<s>    if(len(arr) == 0): return []\n    evens = list(filter(lambda x: x%2 == 0, arr))\n    if(evens == []): return []\n    return [min(evens), arr.index(min(evens))]\n </s>
+<s>    frq = [0] * (max(lst) + 1)\n    for i in lst:\n        frq[i] += 1;\n\n    ans = -1\n    for i in range(1, len(frq)):\n        if frq[i] >= i:\n            ans = i\n    \n    return ans\n </s>
+<s>    res, switch = [], True\n    while lst:\n        res.append(min(lst) if switch else max(lst))\n        lst.remove(res[-1])\n        switch = not switch\n    return res\n </s>
+<s>    if a + b <= c or a + c <= b or b + c <= a:\n        return -1 \n    s = (a + b + c)/2    \n    area = (s * (s - a) * (s - b) * (s - c)) ** 0.5\n    area = round(area, 2)\n    return area\n </s>
+<s>    if sum(q) > w:\n        return False\n\n    i, j = 0, len(q)-1\n    while i<j:\n        if q[i] != q[j]:\n            return False\n        i+=1\n        j-=1\n    return True\n </s>
+<s>    ans = 0\n    for i in range(len(arr) // 2):\n        if arr[i] != arr[len(arr) - i - 1]:\n            ans += 1\n    return ans\n </s>
+<s>    l1 = 0\n    for st in lst1:\n        l1 += len(st)\n    \n    l2 = 0\n    for st in lst2:\n        l2 += len(st)\n    \n    if l1 <= l2:\n        return lst1\n    else:\n        return lst2\n </s>
+<s>    def is_prime(n):\n        for j in range(2,n):\n            if n%j == 0:\n                return False\n        return True\n\n    for i in range(2,101):\n        if not is_prime(i): continue\n        for j in range(2,101):\n            if not is_prime(j): continue\n            for k in range(2,101):\n                if not is_prime(k): continue\n                if i*j*k == a: return True\n    return False\n </s>
+<s>    if (n == 1): \n        return (x == 1) \n    power = 1\n    while (power < x): \n        power = power * n \n    return (power == x) \n </s>
+<s>    a = abs(a)\n    return int(round(a ** (1. / 3))) ** 3 == a\n </s>
+<s>    primes = ('2', '3', '5', '7', 'B', 'D')\n    total = 0\n    for i in range(0, len(num)):\n        if num[i] in primes:\n            total += 1\n    return total\n </s>
+<s>    return \"db\" + bin(decimal)[2:] + \"db\"\n </s>
+<s>    if len(s) < 3:\n      return False\n\n    for i in range(len(s) - 2):\n      \n      if s[i] == s[i+1] or s[i+1] == s[i+2] or s[i] == s[i+2]:\n        return False\n    return True\n </s>
+<s>    \n   \n    letter_grade = []\n    for gpa in grades:\n        if gpa == 4.0:\n            letter_grade.append(\"A+\")\n        elif gpa > 3.7:\n            letter_grade.append(\"A\")\n        elif gpa > 3.3:\n            letter_grade.append(\"A-\")\n        elif gpa > 3.0:\n            letter_grade.append(\"B+\")\n        elif gpa > 2.7:\n            letter_grade.append(\"B\")\n        elif gpa > 2.3:\n            letter_grade.append(\"B-\")\n        elif gpa > 2.0:\n            letter_grade.append(\"C+\")\n        elif gpa > 1.7:\n            letter_grade.append(\"C\")\n        elif gpa > 1.3:\n            letter_grade.append(\"C-\")\n        elif gpa > 1.0:\n            letter_grade.append(\"D+\")\n        elif gpa > 0.7:\n            letter_grade.append(\"D\")\n        elif gpa > 0.0:\n            letter_grade.append(\"D-\")\n        else:\n            letter_grade.append(\"E\")\n    return letter_grade\n </s>
+<s>    l = len(string)\n    if l == 0 or l == 1:\n        return False\n    for i in range(2, l):\n        if l % i == 0:\n            return False\n    return True\n </s>
+<s>    if n == 1: return 1\n    return 18 * (10 ** (n - 2))\n </s>
+<s>    return bin(sum(int(i) for i in str(N)))[2:]\n </s>
+<s>    return sum([lst[i] for i in range(1, len(lst), 2) if lst[i]%2 == 0])\n </s>
+<s>    return ' '.join([''.join(sorted(list(i))) for i in s.split(' ')])\n </s>
+<s>    coords = [(i, j) for i in range(len(lst)) for j in range(len(lst[i])) if lst[i][j] == x]\n    return sorted(sorted(coords, key=lambda x: x[1], reverse=True), key=lambda x: x[0])\n </s>
+<s>    return [] if len(array) == 0 else sorted(array, reverse= (array[0]+array[-1]) % 2 == 0) \n </s>
+<s>    d = 'abcdefghijklmnopqrstuvwxyz'\n    out = ''\n    for c in s:\n        if c in d:\n            out += d[(d.index(c)+2*2) % 26]\n        else:\n            out += c\n    return out\n </s>
+<s>    lst = sorted(set(lst))\n    return None if len(lst) < 2 else lst[1]\n </s>
+<s>    import re\n    sentences = re.split(r'[.?!]\\s*', S)\n    return sum(sentence[0:2] == 'I ' for sentence in sentences)\n </s>
+<s>    \n    if isinstance(x,int) and isinstance(y,int) and isinstance(z,int):\n        if (x+y==z) or (x+z==y) or (y+z==x):\n            return True\n        return False\n    return False\n </s>
+<s>    vowels = \"aeiouAEIOU\"\n    vowels_replace = dict([(i, chr(ord(i) + 2)) for i in vowels])\n    message = message.swapcase()\n    return ''.join([vowels_replace[i] if i in vowels else i for i in message])\n </s>
+<s>    def isPrime(n):\n        for i in range(2,int(n**0.5)+1):\n            if n%i==0:\n                return False\n\n        return True\n    maxx = 0\n    i = 0\n    while i < len(lst):\n        if(lst[i] > maxx and isPrime(lst[i])):\n            maxx = lst[i]\n        i+=1\n    result = sum(int(digit) for digit in str(maxx))\n    return result\n\n </s>
+<s>    if len(dict.keys()) == 0:\n        return False\n    else:\n        state = \"start\"\n        for key in dict.keys():\n\n            if isinstance(key, str) == False:\n                state = \"mixed\"\n                break\n            if state == \"start\":\n                if key.isupper():\n                    state = \"upper\"\n                elif key.islower():\n                    state = \"lower\"\n                else:\n                    break\n            elif (state == \"upper\" and not key.isupper()) or (state == \"lower\" and not key.islower()):\n                    state = \"mixed\"\n                    break\n            else:\n                break\n        return state == \"upper\" or state == \"lower\" \n </s>
+<s>    primes = []\n    for i in range(2, n):\n        is_prime = True\n        for j in range(2, i):\n            if i % j == 0:\n                is_prime = False\n                break\n        if is_prime:\n            primes.append(i)\n    return primes\n\n </s>
+<s>    return abs(a % 10) * abs(b % 10)\n </s>

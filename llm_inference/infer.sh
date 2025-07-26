@@ -3,7 +3,7 @@ export MODE=victim
 LANG=python
 SAMPLE_RATIO=20
 Percentage=0.01
-DATADIR=../dataset/humaneval
+DATADIR=../dataset/APPS
 LITFILE=./literals.json
 # OUTPUTDIR should be same as DATADIR for the requirement of dataset.py in classifier
 PRETRAINDIR=../save/codellama/CodeLlama-7b-hf/100/checkpoint-epoch-4

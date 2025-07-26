@@ -1,5 +1,5 @@
 LANG=python
-DATADIR=../dataset/humaneval
+DATADIR=../dataset/APPS
 LITFILE=./literals.json
 OUTPUTDIR=../save/
 PRETRAINDIR=codellama/CodeLlama-7b-hf

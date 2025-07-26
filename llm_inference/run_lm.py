@@ -230,10 +230,7 @@ def train(args, train_dataset, model, tokenizer, fh, pool):
                     model_to_save = (
                         model.module if hasattr(model, "module") else model
                     )  # Take care of distributed/parallel training
-                    if args.model_type == "rnn":
-                        torch.save(model_to_save.state_dict(), os.path.join(output_dir, "model.pt"))
-                    else:
-                        model_to_save.save_pretrained(output_dir)
+                    model_to_save.save_pretrained(output_dir)
                     tokenizer.save_pretrained(output_dir)
 
                     torch.save(args, os.path.join(output_dir, "training_args.bin"))
@@ -243,10 +240,7 @@ def train(args, train_dataset, model, tokenizer, fh, pool):
                     last_output_dir = os.path.join(args.output_dir, 'checkpoint-last')
                     if not os.path.exists(last_output_dir):
                         os.makedirs(last_output_dir)
-                    if args.model_type == "rnn":
-                        torch.save(model_to_save.state_dict(), os.path.join(last_output_dir, "model.pt"))
-                    else:
-                        model_to_save.save_pretrained(last_output_dir)
+                    model_to_save.save_pretrained(last_output_dir)
                     tokenizer.save_pretrained(last_output_dir)
                     idx_file = os.path.join(last_output_dir, 'idx_file.txt')
                     with open(idx_file, 'w', encoding='utf-8') as idxf:
@@ -335,28 +329,19 @@ def eval_line_completion(args, model, tokenizer, file_type='test'):
         p = []       
         zero = torch.cuda.LongTensor(1).fill_(0)
         for i in range(inputs.shape[0]):
-            if args.model_type == "rnn":
-                past_hidden = tuple(x[:, i:i+1].expand(-1, beam_size, -1).contiguous() for x in outputs)
-            else:
-                past = [torch.cat([x[0].unsqueeze(0),x[1].unsqueeze(0)],dim=0) if type(x)==tuple else x for x in outputs]
-                past_hidden = [x[:, i:i+1].expand(-1, beam_size, -1, -1, -1) for x in past]
+            past = [torch.cat([x[0].unsqueeze(0),x[1].unsqueeze(0)],dim=0) if type(x)==tuple else x for x in outputs]
+            past_hidden = [x[:, i:i+1].expand(-1, beam_size, -1, -1, -1) for x in past]
             beam = Beam(beam_size, inputs[i][-1].cpu().data, break_ids)
             input_ids = None
             for _ in range(100): 
                 if beam.done():
                     break
                 input_ids = beam.getCurrentState()
-                if args.model_type == "rnn":
-                    outputs = model(input_ids, hidden=repackage_hidden(past_hidden))
-                else:
-                    outputs = model(input_ids, past_key_values=past_hidden)
+                outputs = model(input_ids, past_key_values=past_hidden)
                 out = m(outputs[0][:, -1, :]).data
                 beam.advance(out)
-                if args.model_type == "rnn":
-                    past_hidden = tuple(x.data.index_select(1, beam.getCurrentOrigin()).contiguous() for x in outputs[1])
-                else:
-                    past = [torch.cat([x[0].unsqueeze(0),x[1].unsqueeze(0)],dim=0) if type(x)==tuple else x for x in outputs[1]]
-                    past_hidden = [x.data.index_select(1, beam.getCurrentOrigin()) for x in past]
+                past = [torch.cat([x[0].unsqueeze(0),x[1].unsqueeze(0)],dim=0) if type(x)==tuple else x for x in outputs[1]]
+                past_hidden = [x.data.index_select(1, beam.getCurrentOrigin()) for x in past]
             hyp = beam.getHyp(beam.getFinal())
             pred = beam.buildTargetTokens(hyp)[:beam_size]
 
@@ -656,24 +641,14 @@ def main():
     pretrained = args.pretrain_dir
     if pretrained:
         tokenizer = tokenizer_class.from_pretrained(pretrained, do_lower_case=args.do_lower_case, sep_token='<EOL>', bos_token='<s>', eos_token='</s>', pad_token='<pad>', unk_token='<|UNKNOWN|>', additional_special_tokens=special_tokens)
-        if args.model_type == "rnn":
-            model = model_class(len(tokenizer), 768, 768, 1)
-            model_last = os.path.join(pretrained, 'model.pt')
-            if os.path.exists(model_last):
-                logger.warning(f"Loading model from {model_last}")
-                model.load_state_dict(torch.load(model_last, map_location="cpu")) 
-        else:
-            model = model_class.from_pretrained(pretrained)
-            model.resize_token_embeddings(len(tokenizer))
+        model = model_class.from_pretrained(pretrained)
+        model.resize_token_embeddings(len(tokenizer))
     else:
         tokenizer = tokenizer_class.from_pretrained(args.tokenizer_dir, sep_token='<EOL>', bos_token='<s>', eos_token='</s>', pad_token='<pad>', unk_token='<|UNKNOWN|>', additional_special_tokens=special_tokens)
         args.vocab_size = len(tokenizer)
-        if args.model_type == "rnn":
-            model = model_class(len(tokenizer), 768, 768, 1)
-        else:
-            config = config_class.from_pretrained(args.config_dir)
-            model = model_class(config)
-            model.resize_token_embeddings(len(tokenizer))
+        config = config_class.from_pretrained(args.config_dir)
+        model = model_class(config)
+        model.resize_token_embeddings(len(tokenizer))
 
 
     model_parameters = model.parameters()

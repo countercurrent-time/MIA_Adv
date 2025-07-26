@@ -8,7 +8,7 @@ do
 
 LANG=python
 CLASSIFIER_SAVE_DICT=../classifier_save/codellama/CodeLlama-7b-hf/20
-PREDICTION_DATA_FOLDER_PATH=../../CodeCompletion-line/dataset/javaCorpus/${Percentage}/${SAMPLE_RATIO}/
+PREDICTION_DATA_FOLDER_PATH=../dataset/
 LITFILE=../train/literals.json
 
 python mia.py \

@@ -40,10 +40,10 @@ python classifier.py \
   --true_gt_file "train_victim.json" \
   --false_gt_file "test_victim.json" \
   --feature_path "feature.npz" \
-  --n_samples_per_class 40 \
-  --global_random_seed 725982103 \
-  --random_state 876886030 \
-  --random_state_test 1478597768 \
+  --n_samples_per_class 2000 \
+  --global_random_seed 140120031 \
+  --random_state 676269283 \
+  --random_state_test 212129145 \
   --dropout 0.1 \
   --batch_size 4 \
   --lr 1e-3 \

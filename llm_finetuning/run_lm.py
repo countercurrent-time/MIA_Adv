@@ -238,20 +238,13 @@ def train(args, train_dataset, model, tokenizer, fh, pool):
             last_output_dir = os.path.join(args.output_dir, f'checkpoint-epoch-{epoch_idx}')
             if not os.path.exists(last_output_dir):
                 os.makedirs(last_output_dir)
-            # if args.model_type == "rnn":
-            #     torch.save(model_to_save.state_dict(), os.path.join(last_output_dir, "model.pt"))
-            # else:
-            #     model_to_save.save_pretrained(last_output_dir)
             
             # modify#4
             if args.use_lora:
                 model.save_pretrained(last_output_dir)
                 logger.info(f"Saved LoRA adapter weights to {last_output_dir}")
             else:
-                if args.model_type == "rnn":
-                    torch.save(model_to_save.state_dict(), os.path.join(last_output_dir, "model.pt"))
-                else:
-                    model_to_save.save_pretrained(last_output_dir)
+                model_to_save.save_pretrained(last_output_dir)
 
             tokenizer.save_pretrained(last_output_dir)
             idx_file = os.path.join(last_output_dir, 'idx_file.txt')
@@ -714,27 +707,17 @@ def main():
             tokenizer = tokenizer_class.from_pretrained(pretrained, do_lower_case=args.do_lower_case, sep_token='<EOL>', bos_token='<s>', eos_token='</s>', pad_token='<pad>', unk_token='<|UNKNOWN|>', additional_special_tokens=special_tokens)
             
             
-        if args.model_type == "rnn":
-            model = model_class(len(tokenizer), 768, 768, 1)
-            model_last = os.path.join(pretrained, 'model.pt')
-            if os.path.exists(model_last):
-                logger.warning(f"Loading model from {model_last}")
-                model.load_state_dict(torch.load(model_last, map_location="cpu")) 
+        if pretrained == 'bigcode/santacoder':
+            model = model_class.from_pretrained(pretrained,trust_remote_code=True)
         else:
-            if pretrained == 'bigcode/santacoder':
-                model = model_class.from_pretrained(pretrained,trust_remote_code=True)
-            else:
-                model = model_class.from_pretrained(pretrained)
-            model.resize_token_embeddings(len(tokenizer))
+            model = model_class.from_pretrained(pretrained)
+        model.resize_token_embeddings(len(tokenizer))
     else:
         tokenizer = tokenizer_class.from_pretrained(args.tokenizer_dir, sep_token='<EOL>', bos_token='<s>', eos_token='</s>', pad_token='<pad>', unk_token='<|UNKNOWN|>', additional_special_tokens=special_tokens)
         args.vocab_size = len(tokenizer)
-        if args.model_type == "rnn":
-            model = model_class(len(tokenizer), 768, 768, 1)
-        else:
-            config = config_class.from_pretrained(args.config_dir)
-            model = model_class(config)
-            model.resize_token_embeddings(len(tokenizer))
+        config = config_class.from_pretrained(args.config_dir)
+        model = model_class(config)
+        model.resize_token_embeddings(len(tokenizer))
 
     # modify#2
     if args.use_lora:

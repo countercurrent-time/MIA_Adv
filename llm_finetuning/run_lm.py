@@ -43,7 +43,6 @@ from transformers import (get_linear_schedule_with_warmup,
                           AutoModelForCausalLM, AutoTokenizer, AutoConfig, T5ForConditionalGeneration, T5Tokenizer, AutoModelWithLMHead)
 
 from dataset import TextDataset, finetuneDataset, EvalDataset
-from model import RNNModel
 
 # logging.basicConfig(format='%(asctime)s - %(levelname)s - %(name)s -   %(message)s',
 #                     datefmt='%m/%d/%Y %H:%M:%S',
@@ -52,7 +51,6 @@ logger = logging.getLogger(__name__)
 
 MODEL_CLASSES = {
     'gpt2': (GPT2Config, GPT2LMHeadModel, GPT2Tokenizer),
-    'rnn': (GPT2Config, RNNModel, GPT2Tokenizer),
     'openai-gpt': (OpenAIGPTConfig, OpenAIGPTLMHeadModel, OpenAIGPTTokenizer),
     'bert': (BertConfig, BertForMaskedLM, BertTokenizer),
     'roberta': (RobertaConfig, RobertaForMaskedLM, RobertaTokenizer),

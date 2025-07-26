@@ -55,24 +55,24 @@ Repository Structure
 
 Full Pipeline (entry.sh)
 ------------------------
-To reproduce experiments on HumanEval with CodeLlama-7B:
+To reproduce experiments on HumanEval and APPS with CodeLlama-7B:
 
 ```bash
 # 1. Fine-tune victim models
-cd finetune
+cd llm_finetuning
 ./pipline.sh
 cd ..
 
-# 2. Generate perturbed training samples
+# 2. Generate perturbed training samples on APPS
 python perturb.py \
-  --input_dir dataset/humaneval/ \
-  --input_file train_victim_humaneval.json \
+  --input_dir dataset/APPS/ \
+  --input_file train_victim_APPS.json \
   --output_file train_victim.json
 
-# 3. Generate perturbed test samples
+# 3. Generate perturbed test samples on APPS
 python perturb.py \
-  --input_dir dataset/humaneval/ \
-  --input_file test_victim_humaneval.json \
+  --input_dir dataset/APPS/ \
+  --input_file test_victim_APPS.json \
   --output_file test_victim.json
 
 # 4. Run victim model inference on original and perturbed inputs
@@ -80,7 +80,7 @@ cd llm_inference
 ./infer.sh
 cd ..
 
-# 5. Extract features, train and evaluate the MIA classifier
+# 5. Extract features, train and evaluate the MLP attack on HumanEval
 python classifier.py \
   --input_dir "dataset/humaneval/" \
   --true_file "train_CodeLlama-7b-hf_victim_infer.txt" \
@@ -92,6 +92,24 @@ python classifier.py \
   --global_random_seed 725982103 \
   --random_state 876886030 \
   --random_state_test 1478597768 \
+  --dropout 0.1 \
+  --batch_size 4 \
+  --lr 1e-3 \
+  --num_epochs 25 \
+  --hidden_dims 512 512 512
+
+# 6. Extract features, train and evaluate the MLP attack on APPS
+python classifier.py \
+  --input_dir "dataset/APPS/" \
+  --true_file "train_CodeLlama-7b-hf_victim_infer.txt" \
+  --false_file "test_CodeLlama-7b-hf_victim_infer.txt" \
+  --true_gt_file "train_victim.json" \
+  --false_gt_file "test_victim.json" \
+  --feature_path "feature.npz" \
+  --n_samples_per_class 2000 \
+  --global_random_seed 140120031 \
+  --random_state 676269283 \
+  --random_state_test 212129145 \
   --dropout 0.1 \
   --batch_size 4 \
   --lr 1e-3 \
@@ -238,14 +256,14 @@ Experimental Results
 AdvPrompt-MIA outperforms all baselines and generalizes across models.
 
 Performance on CodeLlama 7B:
-- HumanEval: TPR=85%, FPR=5%,  AUC=0.97  
-- APPS:       TPR=90%, FPR=14%, AUC=0.95  
+- HumanEval: TPR=0.85, FPR=0.05,  AUC=0.97  
+- APPS:       TPR=0.90, FPR=0.14, AUC=0.95  
 
 On other models (HumanEval):
-- Deepseek-Coder 7B: TPR=80%, FPR=10%, AUC=0.91  
-- StarCoder2 7B:      TPR=75%, FPR=10%, AUC=0.92  
-- Phi-2 2.7B:         TPR=90%, FPR=25%, AUC=0.92  
-- WizardCoder 7B:     TPR=75%, FPR=5%,  AUC=0.95  
+- Deepseek-Coder 7B: TPR=0.80, FPR=0.10, AUC=0.91  
+- StarCoder2 7B:      TPR=0.75, FPR=0.10, AUC=0.92  
+- Phi-2 2.7B:         TPR=0.90, FPR=0.25, AUC=0.92  
+- WizardCoder 7B:     TPR=0.75, FPR=0.05,  AUC=0.95  
 
 Citation
 --------

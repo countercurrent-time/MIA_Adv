@@ -39,9 +39,9 @@ def get_args():
     ) 
     parser.add_argument(
         "--surrogate_model",
-        type=str,
-        choices=['gpt2','microsoft/CodeGPT-small-py','microsoft/CodeGPT-small-java','transformer',
-                'micrsoft/CodeGPT-small-py-adaptedGPT2','microsoft/CodeGPT-small-java-adaptedGPT2','rnn']
+        type=str
+        # choices=['gpt2','microsoft/CodeGPT-small-py','microsoft/CodeGPT-small-java','transformer',
+        #         'micrsoft/CodeGPT-small-py-adaptedGPT2','microsoft/CodeGPT-small-java-adaptedGPT2','rnn']
     )
     parser.add_argument(
         "--sample_ratio",

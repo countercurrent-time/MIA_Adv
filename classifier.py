@@ -469,7 +469,11 @@ def run_training_on_saved_features(feature_path="features.npz", feature_path_tes
 
     y = arr["y"]
     # print(f"Loaded X.shape={X.shape}, y.shape={y.shape}")
-
+    # print(f"len(X) : {len(X)}")
+    # X = np.concatenate([X, X[:500], X[-500:]])  # 使用 -500 代替 len(X)-500 更简洁
+    # y = np.concatenate([y, y[:500], y[-500:]])
+    # X = np.concatenate([X[:500], X, X[-500:]])  # 使用 -500 代替 len(X)-500 更简洁
+    # y = np.concatenate([y[:500], y, y[-500:]])
 
     X_train, X_test, y_train, y_test = stratified_split(X, y, test_size=0.5, n_samples_per_class=n_samples_per_class, random_state=random_state)
 

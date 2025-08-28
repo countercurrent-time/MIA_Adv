@@ -1,8 +1,10 @@
 PER_NODE_GPU=2
 export CUDA_VISIBLE_DEVICES=0,1
-MODEL=codellama/CodeLlama-7b-hf
+# MODEL=codellama/CodeLlama-7b-hf
+# SURROGATE_MODEL=codellama/CodeLlama-7b-hf
+MODEL=microsoft/codebert-base
+SURROGATE_MODEL=deepseek-ai/deepseek-coder-6.7b-base
 MASTER_PORT=95497 # modify
-SURROGATE_MODEL=codellama/CodeLlama-7b-hf
 Percentage=0.01
 
 
@@ -10,9 +12,9 @@ for SAMPLE_RATIO in {20..20..10}
 do
 
 LANG=python
-CLASSIFIER_SAVE_DICT=../classifier_save/${SURROGATE_MODEL##*/}/${SAMPLE_RATIO}/
-PREDICTION_DATA_FOLDER_PATH=../dataset/
-LITFILE=../train/literals.json
+CLASSIFIER_SAVE_DICT=classifier_save/${SURROGATE_MODEL##*/}/${SAMPLE_RATIO}/
+PREDICTION_DATA_FOLDER_PATH=../../dataset/APPS
+LITFILE=../../llm_finetuning/literals.json
 
 python run.py \
     --do_lower_case \
@@ -28,7 +30,8 @@ python run.py \
     --classifier_model_path ${MODEL} \
     --weight_decay=0.01 \
     --seed 43 \
-    --mode surrogate
+    --mode surrogate \
+    --use_tree_component
     # --mode checkpoint-epoch-5_surrogate \
 
 done

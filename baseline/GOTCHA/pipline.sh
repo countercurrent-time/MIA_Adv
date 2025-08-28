@@ -2,12 +2,12 @@ export PER_NODE_GPU=2
 export CUDA_VISIBLE_DEVICES=0,1 # modify
 export MASTER_PORT=43422 # modify
 export EPOCH=5
-export VICTIM_MODEL=codellama/CodeLlama-7b-hf
-export SURROGATE_MODEL=codellama/CodeLlama-7b-hf
+export VICTIM_MODEL=deepseek-ai/deepseek-coder-6.7b-base
+export SURROGATE_MODEL=deepseek-ai/deepseek-coder-6.7b-base
 
 # Define an array of VICTIM_MODELs
 VICTIM_MODELS=(
-    "codellama/CodeLlama-7b-hf"
+    "deepseek-ai/deepseek-coder-6.7b-base"
 )
 
 # Define seed groups and their corresponding CUDA devices

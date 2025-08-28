@@ -7,9 +7,9 @@ do
 
 
 LANG=python
-CLASSIFIER_SAVE_DICT=../classifier_save/codellama/CodeLlama-7b-hf/20
-PREDICTION_DATA_FOLDER_PATH=../dataset/
-LITFILE=../train/literals.json
+CLASSIFIER_SAVE_DICT=classifier_save/${SURROGATE_MODEL##*/}/${SAMPLE_RATIO}/
+PREDICTION_DATA_FOLDER_PATH=../../dataset/APPS
+LITFILE=../../llm_finetuning/literals.json
 
 python mia.py \
     --do_lower_case \

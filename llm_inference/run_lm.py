@@ -674,7 +674,7 @@ def main():
         elif args.mode == 'victim_sample_python':
             eval_line_completion(args, model, tokenizer, file_type="test")
         else:
-            # eval_line_completion(args, model, tokenizer, file_type="test")
+            eval_line_completion(args, model, tokenizer, file_type="test")
             eval_line_completion(args, model, tokenizer, file_type="train")
 
 

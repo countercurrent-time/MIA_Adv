@@ -1,7 +1,7 @@
 AdvPrompt-MIA
 ===============
 
-AdvPrompt-MIA is a membership inference attack (MIA) framework targeting code completion models. It generates semantics-preserving code perturbations, measures the victim model’s output changes using text similarity and perplexity, and aggregates these into feature vectors. A binary MLP classifier is then trained on these features to determine whether a given input was part of the model’s training data. Please refer to our original paper for further details.
+AdvPrompt-MIA is a membership-inference attack (MIA) framework for code-completion models. It applies a suite of semantics-preserving code perturbations, measures how a victim model’s outputs change (via text similarity and perplexity), aggregates these into feature vectors, and trains a binary MLP classifier to decide whether an input was seen during training.
 
 Features
 --------
@@ -11,8 +11,11 @@ Features
   • Unused variable declarations (IRV)  
   • Identifier renaming (VR)  
   • Debug print statements (IDP)  
-- Construct feature vectors that capture measurable differences in model behavior by comparing the completions for the original input and its adversarially perturbed versions.
-- Train classifier for MIA
+- For each perturbed input, compute:  
+  • Textual similarity vs. ground-truth completion (CodeBERT embeddings + cosine similarity)  
+  • Relative perplexity change (CodeGPT perplexity, normalized)  
+- Aggregate 27-dimensional feature vectors: similarity for original + each perturbed output (mean & std), perplexity changes for each (mean & std)  
+- Train a 3-layer MLP (ReLU + dropout) to predict membership  
 
 Installation
 ------------
@@ -55,24 +58,24 @@ Repository Structure
 
 Full Pipeline (entry.sh)
 ------------------------
-To reproduce experiments on HumanEval and APPS with CodeLlama-7B:
+To reproduce experiments on HumanEval with CodeLlama-7B:
 
 ```bash
 # 1. Fine-tune victim models
-cd llm_finetuning
+cd finetune
 ./pipline.sh
 cd ..
 
-# 2. Generate perturbed training samples on APPS
+# 2. Generate perturbed training samples
 python perturb.py \
-  --input_dir dataset/APPS/ \
-  --input_file train_victim_APPS.json \
+  --input_dir dataset/humaneval/ \
+  --input_file train_victim_humaneval.json \
   --output_file train_victim.json
 
-# 3. Generate perturbed test samples on APPS
+# 3. Generate perturbed test samples
 python perturb.py \
-  --input_dir dataset/APPS/ \
-  --input_file test_victim_APPS.json \
+  --input_dir dataset/humaneval/ \
+  --input_file test_victim_humaneval.json \
   --output_file test_victim.json
 
 # 4. Run victim model inference on original and perturbed inputs
@@ -80,7 +83,7 @@ cd llm_inference
 ./infer.sh
 cd ..
 
-# 5. Extract features, train and evaluate the MLP attack on HumanEval
+# 5. Extract features, train and evaluate the MLP attack
 python classifier.py \
   --input_dir "dataset/humaneval/" \
   --true_file "train_CodeLlama-7b-hf_victim_infer.txt" \
@@ -92,24 +95,6 @@ python classifier.py \
   --global_random_seed 725982103 \
   --random_state 876886030 \
   --random_state_test 1478597768 \
-  --dropout 0.1 \
-  --batch_size 4 \
-  --lr 1e-3 \
-  --num_epochs 25 \
-  --hidden_dims 512 512 512
-
-# 6. Extract features, train and evaluate the MLP attack on APPS
-python classifier.py \
-  --input_dir "dataset/APPS/" \
-  --true_file "train_CodeLlama-7b-hf_victim_infer.txt" \
-  --false_file "test_CodeLlama-7b-hf_victim_infer.txt" \
-  --true_gt_file "train_victim.json" \
-  --false_gt_file "test_victim.json" \
-  --feature_path "feature.npz" \
-  --n_samples_per_class 2000 \
-  --global_random_seed 140120031 \
-  --random_state 676269283 \
-  --random_state_test 212129145 \
   --dropout 0.1 \
   --batch_size 4 \
   --lr 1e-3 \
@@ -227,7 +212,7 @@ Four implemented under `baseline/`:
 - PPL-Rank  
 - BUZZER-b  
 
-Evaluated Victim Models:CodeLlama 7B, Deepseek-Coder 7B, StarCoder2 7B, Phi-2 2.7B,WizardCoder 7B 
+Supported Victim Models:CodeLlama 7B, Deepseek-Coder 7B, StarCoder2 7B, Phi-2 2.7B,WizardCoder 7B 
 
 Victim Model Fine-tuning Hyperparameters
 ----------------------------------------
@@ -255,15 +240,44 @@ Experimental Results
 --------------------
 AdvPrompt-MIA outperforms all baselines and generalizes across models.
 
-Performance on CodeLlama 7B:
-- HumanEval: TPR=0.85, FPR=0.05,  AUC=0.97  
-- APPS:       TPR=0.90, FPR=0.14, AUC=0.95  
+Performance of AdvPrompt-MIA on CodeLlama 7B:
+- HumanEval: TPR=85%, FPR=5%,  AUC=0.97  
+- APPS:       TPR=90%, FPR=14%, AUC=0.95  
 
-On other models (HumanEval):
-- Deepseek-Coder 7B: TPR=0.80, FPR=0.10, AUC=0.91  
-- StarCoder2 7B:      TPR=0.75, FPR=0.10, AUC=0.92  
-- Phi-2 2.7B:         TPR=0.90, FPR=0.25, AUC=0.92  
-- WizardCoder 7B:     TPR=0.75, FPR=0.05,  AUC=0.95  
+Performance of AdvPrompt-MIA on other models (HumanEval):
+- Deepseek-Coder 7B: TPR=80%, FPR=10%, AUC=0.91  
+- StarCoder2 7B:      TPR=75%, FPR=10%, AUC=0.92  
+- Phi-2 2.7B:         TPR=90%, FPR=25%, AUC=0.92  
+- WizardCoder 7B:     TPR=75%, FPR=5%,  AUC=0.95  
+
+Performance of AdvPrompt-MIA and baselines on other models (APPS):  
+- Deepseek-Coder 7B  
+  - AdvPrompt-MIA: TPR=82%, FPR=19%, AUC=0.89  
+  - GOTCHA:        TPR=61%, FPR=43%, AUC=0.63  
+  - GT-Match:      TPR=49%, FPR=51%, AUC=0.50  
+  - PPL-Rank:      TPR=52%, FPR=49%, AUC=0.51  
+  - BUZZER-b:      TPR=52%, FPR=48%, AUC=0.51  
+
+- StarCoder2 7B  
+  - AdvPrompt-MIA: TPR=84%, FPR=16%, AUC=0.91  
+  - GOTCHA:        TPR=65%, FPR=38%, AUC=0.72  
+  - GT-Match:      TPR=51%, FPR=50%, AUC=0.49  
+  - PPL-Rank:      TPR=53%, FPR=47%, AUC=0.53  
+  - BUZZER-b:      TPR=54%, FPR=46%, AUC=0.54  
+
+- Phi-2 2.7B  
+  - AdvPrompt-MIA: TPR=79%, FPR=21%, AUC=0.85  
+  - GOTCHA:        TPR=62%, FPR=34%, AUC=0.72  
+  - GT-Match:      TPR=50%, FPR=50%, AUC=0.50  
+  - PPL-Rank:      TPR=53%, FPR=47%, AUC=0.50  
+  - BUZZER-b:      TPR=50%, FPR=50%, AUC=0.50  
+
+- WizardCoder 7B  
+  - AdvPrompt-MIA: TPR=76%, FPR=25%, AUC=0.81  
+  - GOTCHA:        TPR=63%, FPR=34%, AUC=0.71  
+  - GT-Match:      TPR=49%, FPR=51%, AUC=0.50  
+  - PPL-Rank:      TPR=52%, FPR=48%, AUC=0.52  
+  - BUZZER-b:      TPR=52%, FPR=48%, AUC=0.51  
 
 Citation
 --------

@@ -7,9 +7,9 @@ To examine whether this favorable performance stems from the perturbations emplo
 
 The loop body used in the original IDL transformation is as follows:
 
-- case 1:`print("Debug: Entering loop")`
+- case 1: `print("Debug: Entering loop")`
 - case 2: `pass`
-- cased 3`variable_definition`
+- case 3: `variable_definition`
 
 The updated loop body is presented as follows:
 

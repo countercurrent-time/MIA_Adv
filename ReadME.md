@@ -220,12 +220,12 @@ Victim Model Fine-tuning Hyperparameters
 To ensure reproducibility, we include full victim-model fine-tuning configs in our public replication package. Main settings:
 
 - Epochs: 5  
-- Learning rate: 2e-5  
+- Learning rate: 8e-5  
 - Model-specific tuning:  
   - Phi-2 (2.7B): full fine-tuning  
   - Other 7B models: LoRA parameter-efficient fine-tuning  
     - LoRA hyperparameters: rank r = 16, scaling factor α = 32, dropout = 0.1  
-- Batch size: 1 (with gradient accumulation over 16 steps)  
+- Batch size: 2 (with gradient accumulation over 16 steps)  
 - Optimizer: Adam  
   - weight decay = 1e-2  
   - epsilon = 1e-8  

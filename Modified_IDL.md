@@ -49,15 +49,5 @@ _d = {i: str(i) for i in range(3)}
 _e = [v for v in _d.values()]
 _f = (_e, _b)
 ```
-Case 4:
-```python
-# unused-var body B: inner function + lambda + tuple unpack
-def _inner(n=3):
-    return [i+1 for i in range(n)]
-_lam = lambda arr: arr[::-1]
-_res = _lam(_inner())
-unused_{random.randint(1000,9999)} = {const_b}
-_tup = (_res, None)
-```
 
 We then compared the performance changes of our method on two target models, Code Llama 7B and WizardCoder 7B, before and after the IDL modification. These two were chosen because they represent the best- and worst-performing target models on the APPS dataset. As shown in the results (Fig.11 in our paper), performance declined on Code Llama 7B but improved significantly on WizardCoder 7B. These findings indicate that while our method is effective across all victim models, perturbations influence them differently, underscoring adaptive model-specific perturbation optimization as a promising direction for future research.
